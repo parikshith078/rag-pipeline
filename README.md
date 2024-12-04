@@ -6,7 +6,7 @@ This document outlines the design of a Retrieval-Augmented Generation (RAG) syst
 
 The architecture covers the entire pipeline, from data ingestion and preprocessing to query handling and response generation. It aims to streamline information retrieval for MES users, enhancing decision-making and operational efficiency through intelligent, context-aware assistance.
 
-![RAG PIPELINE](./assets/rag_pipline.png)
+![RAG PIPELINE](./assets/rag_pipeline.png)
 
 ### Implementation
 1. **Input Data Sources**:
