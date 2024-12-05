@@ -66,23 +66,27 @@ def generate_prompt(query: str) -> str:
 
     # Base prompt template
     base_prompt = f"""Based on the following context items, please answer the query.
-Give yourself room to think by extracting relevant passages from the context before answering the query.
-Don't return the thinking, only return the answer.
-Make sure your answers are as explanatory as possible.
-Use the following examples as reference for the ideal answer style.
-\nExample 1:
-Query: What are the fat-soluble vitamins?
-Answer: The fat-soluble vitamins include Vitamin A, Vitamin D, Vitamin E, and Vitamin K. These vitamins are absorbed along with fats in the diet and can be stored in the body's fatty tissue and liver for later use. Vitamin A is important for vision, immune function, and skin health. Vitamin D plays a critical role in calcium absorption and bone health. Vitamin E acts as an antioxidant, protecting cells from damage. Vitamin K is essential for blood clotting and bone metabolism.
-\nExample 2:
-Query: What are the causes of type 2 diabetes?
-Answer: Type 2 diabetes is often associated with overnutrition, particularly the overconsumption of calories leading to obesity. Factors include a diet high in refined sugars and saturated fats, which can lead to insulin resistance, a condition where the body's cells do not respond effectively to insulin. Over time, the pancreas cannot produce enough insulin to manage blood sugar levels, resulting in type 2 diabetes. Additionally, excessive caloric intake without sufficient physical activity exacerbates the risk by promoting weight gain and fat accumulation, particularly around the abdomen, further contributing to insulin resistance.
-\nExample 3:
-Query: What is the importance of hydration for physical performance?
-Answer: Hydration is crucial for physical performance because water plays key roles in maintaining blood volume, regulating body temperature, and ensuring the transport of nutrients and oxygen to cells. Adequate hydration is essential for optimal muscle function, endurance, and recovery. Dehydration can lead to decreased performance, fatigue, and increased risk of heat-related illnesses, such as heat stroke. Drinking sufficient water before, during, and after exercise helps ensure peak physical performance and recovery.
-\nNow use the following context items to answer the user query:
-{context}
-\nRelevant passages: <extract relevant passages from the context here>
-User query: {query}
-Answer:"""
+    Give yourself room to think by extracting relevant passages from the context before answering the query.
+    Don't return the thinking, only return the answer.
+    Make sure your answers are as explanatory as possible.
+    Use the following examples as reference for the ideal answer style.
+
+    \nExample 1:
+    Query: What are the safety guidelines for handling Machine 23 in a chemical plant?
+    Answer: Safety guidelines for handling Machine 23 in a chemical plant include several precautions to ensure operator safety and minimize the risk of accidents. These guidelines typically include wearing personal protective equipment (PPE) such as gloves, goggles, and flame-resistant clothing. Operators should also be trained in emergency shutdown procedures in case of equipment malfunction. It's important to regularly inspect Machine 23 for signs of wear or potential failure. Proper lockout/tagout (LOTO) procedures should be followed to ensure that the machine is de-energized during maintenance activities. Additionally, operators must be aware of the specific hazards associated with the chemicals being processed, such as flammability, toxicity, or corrosiveness.
+
+    \nExample 2:
+    Query: How can an MES help improve inventory management in a chemical manufacturing facility?
+    Answer: A Manufacturing Execution System (MES) can significantly improve inventory management in a chemical manufacturing facility by providing real-time tracking of raw materials, intermediate products, and finished goods. Through integration with sensors and automated systems, MES allows for accurate tracking of inventory levels, usage rates, and production status. This real-time data helps prevent stockouts or overstocking by providing insights into material demand and supply. Additionally, MES can generate automatic alerts for reordering materials, reducing the chances of human error and improving overall efficiency in the supply chain.
+
+    \nExample 3:
+    Query: What are the common challenges when implementing an MES in a chemical plant?
+    Answer: Common challenges when implementing a Manufacturing Execution System (MES) in a chemical plant include system integration, data accuracy, and employee training. Integrating MES with existing systems, such as Enterprise Resource Planning (ERP) or process control systems, can be complex and may require significant customization. Ensuring accurate data input is crucial, as MES systems rely on precise data to optimize operations, and incorrect information can lead to errors in production scheduling or inventory management. Additionally, employees must be trained to effectively use the MES system, which may require overcoming resistance to change and adapting to new workflows. Adequate support and continuous monitoring are also necessary to ensure the system operates effectively post-implementation.
+
+    \nNow use the following context items to answer the user query:
+    {context}
+    \nRelevant passages: <extract relevant passages from the context here>
+    User query: {query}
+    Answer:"""
     
     return base_prompt

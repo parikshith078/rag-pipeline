@@ -1,120 +1,84 @@
-# Step-by-Step Guide for Building the RAG Pipeline
+# RAG Pipeline with Pinecone
 
-## 1. Data Preprocessing
-### Overview
-This document outlines the design of a Retrieval-Augmented Generation (RAG) system tailored for a Manufacturing Execution System (MES) in the chemical industry. The goal is to create a robust architecture that integrates diverse data sources, including text documents, video transcripts, logs, FAQs, and user guides, to build a comprehensive knowledge base. The system will leverage Gen-AI techniques to provide precise, contextually relevant answers to user queries.
+A Retrieval-Augmented Generation (RAG) implementation using Pinecone as the vector database, with both a Streamlit interface and Jupyter notebook examples.
 
-The architecture covers the entire pipeline, from data ingestion and preprocessing to query handling and response generation. It aims to streamline information retrieval for MES users, enhancing decision-making and operational efficiency through intelligent, context-aware assistance.
+## Prerequisites
 
-![RAG PIPELINE](./assets/rag_pipeline.png)
+- Python 3.0 or higher
+- Pinecone API key
+- Virtual environment (recommended)
 
-### Implementation
-1. **Input Data Sources**:
-   - Sample public PDFs and audio files related to MSE in the chemical industry were used.
+## Installation
 
-2. **Processing Audio Files**:
-   - Whisper audio-to-text model was employed to transcribe audio files into text along with metadata. The metadata format includes:
-     ```py
-     {
-         "audio_source_file": file,
-         "text": text,
-         "char_count": len(text),
-         "word_count": len(text.split(" ")),
-         "sentence_count_raw": len(text.split(". ")),
-         "token_count": len(text) / 4
-     }
-     ```
+1. Clone the repository:
+```bash
+git clone https://github.com/parikshith078/rag-pipeline 
+cd rag-pipeline
+```
 
-3. **Processing PDF Files**:
-   - PyMuPDF was utilized to extract text and metadata from PDFs. Metadata includes:
-     ```py
-     {
-         "page_number": page_number,
-         "page_char_count": len(text),
-         "page_word_count": len(text.split(" ")),
-         "page_sentence_count_raw": len(text.split(". ")),
-         "page_token_count": len(text) / 4,
-         "text": text
-     }
-     ```
+2. Create and activate a virtual environment:
+```bash
+# Create virtual environment
+python3 -m venv venv
 
-4. **Text Preprocessing**:
-   - Text from audio and PDFs was combined and processed into sentences using the spaCy NLP library.
-   - Sentences were grouped into chunks of up to 10 sentences each, ensuring that each chunk stayed within the embedding model’s 380-token limit.
-   - Each chunk will have metadata associated with it in the following format:
-     ```py
-     {
-         "source": "pdf", # or audio, video
-         "source_file": "file_path",
-         "page_number": 21, # only for documents
-         "token_count": len(text) / 4,
-         "text": text,
-     }
-     ```
+# Activate virtual environment
+# On Windows:
+venv\Scripts\activate
+# On Unix or MacOS:
+source venv/bin/activate
+```
 
-   - Chunks with fewer than 30 tokens were filtered out to retain only meaningful content.
+3. Install dependencies:
+```bash
+pip install -r requirements.txt
+```
 
-## 2. Embedding Generation
-### Model Selection
-- The **SentenceTransformer** model `all-mpnet-base-v2` was chosen for generating embeddings, as it provides high-quality vector representations with minimal GPU load.
+4. Configure environment variables:
+- Create a `.env` file in the root directory
+- Add your Pinecone API key:
+```
+PINECONE_API_KEY=your_api_key_here
+```
 
-### Process
-- Embeddings were generated for each text chunk using the following configuration:
-  ```python
-  embedding_model = SentenceTransformer(model_name_or_path="all-mpnet-base-v2")
-  ```
+## Usage
 
-## 3. Vector Indexing
-### Tool
-- **Pinecone** vector database was used to store and query the embeddings. It has a generous free tier and fast insert & semantic search capability.
+### Streamlit Interface
 
-### Implementation
-- An index was created with the following specifications:
-  ```python
-  pc.create_index(
-      name=index_name,
-      dimension=768, 
-      metric="cosine", # For semilarity search
-      spec=ServerlessSpec(
-          cloud="aws",
-          region="us-east-1"
-      )
-  )
-  ```
+Run the Streamlit application:
+```bash
+streamlit run streamlit_app/app.py
+```
 
-- Associated metadata is stored on device (We can use a relationa database like postgresql for batter scaleing).
+### Jupyter Notebooks
 
-## 4. RAG Workflow
-### Input
-- A user query is input to the system.
+The project includes two Jupyter notebooks for different stages of the RAG pipeline:
 
-### Process
-1. **Query Embedding**:
-   - The user query is embedded using the same embedding model as used for the data.
+1. **Data Preprocessing and Storage**
+   - Preprocessing of source data
+   - Embedding generation
+   - Storage in Pinecone vector database
 
-2. **Retrieval**:
-   - The query embedding is used to fetch the top 5 most relevant context resources from the Pinecone vector database.
+2. **RAG Pipeline Implementation**
+   - Implementation of the retrieval-augmented generation pipeline
+   - Query processing and response generation
 
-3. **Context-Aware Generation**:
-   - The retrieved context is combined with the user query to create a prompt.
-   - The prompt is passed to the LLM (`google/gemma-2b-it`), which generates a response leveraging the provided context.
+To use the notebooks:
+```bash
+jupyter notebook
+```
 
-### Output
-- The final response is presented to the user.
+Navigate to the notebooks directory and open either notebook to begin.
 
-## 5. Evaluation
-### Proposed Metrics
-1. **Retrieval Metrics**:
-   - Precision@k: Measure the relevance of the top-k retrieved contexts.
-   - Recall: Evaluate how many of the relevant contexts were retrieved.
-
-2. **Generation Metrics**:
-   - BLEU/ROUGE: Compare the generated response with reference answers (if available).
-   - Human Evaluation: Rate the usefulness and correctness of the response on a scale.
-
-3. **Efficiency Metrics**:
-   - Query latency: Measure the time taken to retrieve and generate a response.
-   - Memory usage: Monitor resource utilization during the process.
-
-
+## Project Structure
+```
+├── requirements.txt
+├── .env
+├── assets
+├── rag_docs
+├── streamlit_app/
+│   └── app.py
+└── notebooks/
+    ├── rag_preprocessing_embedding.ipynb
+    └── rag_workflow.ipynb
+```
 
